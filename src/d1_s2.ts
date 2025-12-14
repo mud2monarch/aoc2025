@@ -1,15 +1,14 @@
 let cursor = 50;
-let accumulator = 0;
+let clicks = 0;
 
 const response = await fetch("https://adventofcode.com/2025/day/1/input", {
   headers: {
-    Cookie: `session=53616c7465645f5f3d34245b0eb7c5abc84c6942a3488b68591d9a05f60d8a2c4fa691c07eb4828ec4eb3ee0d37f508f72d2da8b59bc5d0d02df7de81efd91fe`,
+    Cookie: `session=${process.env.AOC_SESSION}`,
   },
 });
 
 const text = await response.text();
 const lines: string[] = text.split("\n").filter(Boolean);
-const slice: string[] = lines.slice(100, 120);
 const test = [
   "L68",
   "L30",
@@ -24,35 +23,49 @@ const test = [
   "R1000",
 ];
 
-test.forEach((line) => {
-  console.log("Line is ", line);
+lines.forEach((line) => {
+  // Define a special case for starting at zero; avoids double-counting.
+  const started_at_zero: boolean = cursor === 0;
+
+  // Isolate direction from the instruction
   const dir = line[0];
-  let distance = parseInt(line.slice(1));
+
+  // Isolate distance and convert to hundreds and tens + ones
+  const distance = parseInt(line.slice(1));
+  const hundos = Math.floor(distance / 100);
+  const tens = distance - hundos * 100;
+
+  // console.log("Starting cursor: ", cursor, ". Line: ", line);
+
+  // Hundreds are full rotations so we simply add them to the clicks
+  clicks += hundos;
 
   if (dir === "L") {
-    distance = distance * -1;
+    cursor -= tens;
+    if (cursor < 0) {
+      cursor += 100;
+      if (!started_at_zero) {
+        clicks++;
+      }
+    }
+  } else if (dir === "R") {
+    cursor += tens;
+
+    if (cursor === 100) {
+      cursor -= 100;
+    } else if (cursor > 100) {
+      cursor -= 100;
+      clicks++;
+    }
+  } else {
+    console.error("Invalid direction:", dir);
   }
 
-  cursor += distance;
-
-  if (cursor > 100 && cursor % 100 !== 0) {
-    accumulator += Math.floor(cursor / 100);
-    cursor %= 100;
-  } else if (cursor > 100 && cursor % 100 === 0) {
-    accumulator += Math.floor(cursor / 100) - 1;
-    cursor %= 100;
-  }
-  // Issue: when cursor starts at 0 and moves L1 to 99.
-  while (cursor <= -1) {
-    accumulator += 1;
-    cursor += 100;
+  if (cursor % 100 === 0 && !started_at_zero) {
+    clicks++;
   }
 
-  if (cursor % 100 === 0) {
-    accumulator += 1;
-  }
-
-  console.log("Cursor is ", cursor, "and new accumulator is ", accumulator);
+  // console.log("Clicks: ", clicks, ". Ending cursor: ", cursor);
 });
 
-console.log(accumulator);
+console.log("Total clicks:", clicks);
