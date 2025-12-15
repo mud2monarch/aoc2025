@@ -36,7 +36,7 @@ function sumInvalidIdsInRange(start: number, end: number): number {
 const answer = input
   .trim()
   .split(",")
-  .map((range) => range.split("-").map((strs) => Number(strs)))
+  .map((range) => range.split("-").map((str) => Number(str)))
   .reduce((total, [start, end]) => total + sumInvalidIdsInRange(start, end), 0);
 
 console.log(answer);
