@@ -21,16 +21,9 @@ function findLargestJoltage(bank: string): number {
   return Number(joltage.join(""));
 }
 
-function findLargestDigit(sub_bank: string): [string, number] {
-  let largestDigit = -1;
-  let largestIndex = 0;
-  for (let i = sub_bank.length - 1; i >= 0; i--) {
-    const digit = Number(sub_bank[i]);
-    if (digit >= largestDigit) {
-      largestDigit = digit;
-      largestIndex = i;
-    }
-  }
+function findLargestDigit(subBank: string): [string, number] {
+  const largestDigit = Math.max(...subBank.split("").map(Number));
+  const largestIndex = subBank.indexOf(largestDigit.toString());
   return [largestDigit.toString(), largestIndex];
 }
 
