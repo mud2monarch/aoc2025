@@ -8,17 +8,7 @@ const test =
   "..@@.@@@@.\n@@@.@.@.@@\n@@@@@.@.@@\n@.@@@@..@.\n@@.@@@@.@@\n.@@@@@@@.@\n.@.@.@.@@@\n@.@@@.@@@@\n.@@@@@@@@.\n@.@.@@@.@.";
 
 function mapLine(line: string): boolean[] {
-  let result: boolean[] = [];
-
-  for (let i = 0; i < line.length; i++) {
-    if (line[i] === "@") {
-      result.push(true);
-    } else if (line[i] === ".") {
-      result.push(false);
-    } else {
-      throw new Error(`Invalid character: ${line[i]}`);
-    }
-  }
+  const result = line.split("").map((char) => char === "@");
 
   return result;
 }
@@ -28,7 +18,7 @@ const parsedInput = input
   .split("\n")
   .map((line) => mapLine(line));
 
-let numSpaces = 0;
+let numRolls = 0;
 
 for (let row = 0; row < parsedInput.length; row++) {
   for (let col = 0; col < parsedInput[row].length; col++) {
@@ -50,9 +40,9 @@ for (let row = 0; row < parsedInput.length; row++) {
       }
     }
     if (adjacentRolls < 4 && parsedInput[row][col]) {
-      numSpaces++;
+      numRolls++;
     }
   }
 }
-console.log(numSpaces);
+console.log(numRolls);
 // bun run src/d4_s1.ts  0.03s user 0.02s system 28% cpu 0.177 total
