@@ -20,13 +20,12 @@ const freshStrings = input.trim().split("\n\n").at(0)!;
 const freshRanges = freshStrings
   .trim()
   .split("\n")
-  .map((range) => range.split("-").map(Number));
-
-freshRanges.sort((a, b) => a[0]! - b[0]!);
+  .map((range) => range.split("-").map(Number))
+  .sort((a, b) => a[0]! - b[0]!);
 
 const deduplicatedRanges = freshRanges.reduce((acc, curr) => {
   if (acc.length === 0) {
-    acc.push(curr);
+    return [curr];
   } else {
     const lastRange = acc[acc.length - 1];
     if (curr[0] <= lastRange[1]) {
@@ -39,8 +38,9 @@ const deduplicatedRanges = freshRanges.reduce((acc, curr) => {
 }, [] as number[][]);
 
 const availableCounter = deduplicatedRanges.reduce(
-  (acc, [start, end]) => (acc += end - start + 1),
+  (acc, [start, end]) => acc + end - start + 1,
   0,
 );
 
 console.log(availableCounter);
+// bun run src/d5_s2.ts  0.02s user 0.02s system 28% cpu 0.140 total
