@@ -14,7 +14,7 @@ const problemArray: string[][] = input
   .split("\n")
   .map((line) => line.trim().split(/\s+/));
 
-const problemType: string[] = problemArray[problemArray.length - 1];
+const problems: string[] = problemArray[problemArray.length - 1];
 
 const numbers: number[][] = problemArray
   .slice(0, -1)
@@ -25,13 +25,6 @@ function doCephalopodMath(
   numbers: number[][],
   problems: string[],
 ): number {
-  // Each row should have the same number of columns as problem types
-  if (numbers[col]!.length !== problems.length) {
-    throw new Error(
-      "Mismatch between columns and problem types for column ${col}.",
-    );
-  }
-
   let sum = 0;
   if (problems[col] === "*") {
     sum = 1;
@@ -49,7 +42,7 @@ function doCephalopodMath(
 
 let total = 0;
 for (let col = 0; col < numbers[0]!.length; col++) {
-  total += doCephalopodMath(col, numbers, problemType);
+  total += doCephalopodMath(col, numbers, problems);
 }
 
 console.log(total);

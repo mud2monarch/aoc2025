@@ -9,43 +9,50 @@ const test = `123 328  51 64
   6 98  215 314
 *   +   *   + `;
 
-const problemArray: string[][] = input
+const problemArray: string[][] = test
   .trim()
   .split("\n")
   .map((line) => line.trim().split(/\s+/));
 
 const problemType: string[] = problemArray[problemArray.length - 1];
+const numbers = problemArray.slice(0, -1);
 
-function doCephalopodMath(
-  col: number,
-  numbers: string[],
-  problems: string,
-): number {
+function doCephalopodMath(column: string[], problem: string): number {
+  console.log("doCephalopodMath: ", column, " on ", problem);
   let sum = 0;
+  // find longest length in the passed column
   let longestLen = 0;
-  for (const n of numbers) {
+  for (const n of column) {
     if (n.length > longestLen) longestLen = n.length;
   }
-  for (let i = longestLen; i >= 0; i--) {
-    // iterate through each numbers[] and destructure
+  // build the digits
+  for (let i = longestLen; i > 0; i--) {
+    let digits: string[] = [];
+    for (let row = 0; row < column.length; row++) {
+      let char = "";
+      // think the logic issue is here.
+      if (i > column[row]!.length) {
+        char = "0";
+      } else {
+        char = column[row]!.slice(i - 1, i);
+      }
+      digits.push(char);
+    }
+    console.log("Built number: ", digits.join(""));
+    if (problem === "+") sum += parseInt(digits.join(""));
+    else if (problem === "*") sum *= parseInt(digits.join(""));
   }
   return sum;
 }
 
 let total = 0;
-// We assume that each row should have the same number of columns as problem types.
-if (numbers[col]!.length !== problems.length) {
-  throw new Error(
-    "Mismatch between columns and problem types for column ${col}.",
-  );
-}
 
 for (let col = 0; col < numbers[0]!.length; col++) {
   let column: string[] = [];
   for (let row = 0; row < numbers.length; row++) {
     column.push(numbers[row]![col]);
   }
-  total += doCephalopodMath(col, numbers, problemType[col]);
+  total += doCephalopodMath(column, problemType[col]);
 }
 
 console.log(total);
